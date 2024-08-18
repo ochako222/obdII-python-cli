@@ -1,6 +1,14 @@
-def resetFlow():
-    # global currentState
-    # print(f"Your order is successfully placed\n")
-    # print(f"You will be shortly redirected to the  {paymentOption} portal to make a payment \n")
-    # currentState = 'Exit'
-    print('reset flow...')
+import obd
+
+def resetErrors(connection):
+    print('resetting all errors')
+    # dtc_list = connection.query(obd.commands.GET_DTC)
+    
+    # if dtc_list.is_null():
+    #     print("No DTCs found.")
+    # else:
+    #     for dtc in dtc_list.value:
+    #         connection.query(obd.commands.CLEAR_DTC)
+    #         print("DTCs cleared.")
+            
+        

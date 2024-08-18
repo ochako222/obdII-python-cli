@@ -1,47 +1,60 @@
+import obd
 from app.helpers import showOptions
-from app.reset import resetFlow
-from app.check import checkFlow
+from app.reset import resetErrors
+from app.check import showAllErrors
 
-# state variables
-currentState = 'HomePage'
-previousState = ''
+# available view
+home_view = "HomePage"
+screener_view = "ScreenerView"
 
 # available options
-check_errors = "Check errors"
-reset_errors = "Reset errors"
+check_errors = "Error screener"
+
+# actions
+show_errors = "Show errors"
+reset_errors = "Clean errors"
 exit = "Exit"
 back = "Back"
 
+# state variables
+currentState = home_view
+previousState = ''
+
+connection = obd.OBD('/dev/tty.usbserial-2140')
+isConnected = connection.is_connected()
+
+
+# mapping what to do after selecting corresponding action
 def flow(option):
-    global currentState, previousState
+    global currentState, previousState, connection
     if option == check_errors:
         previousState = currentState
-        currentState = 'CheckView'
-        return checkFlow()
+        currentState = screener_view
     elif option == reset_errors:
-        previousState = currentState
-        currentState = 'ResetView'
-        return resetFlow()
+        return resetErrors(connection)
+    elif option == show_errors:
+        return showAllErrors(connection)
     elif option == exit:
         currentState = 'Exit'
     elif option == back:
         currentState = previousState
 
 # main function to change page view
-def view(state):
-    match state:
-        case "HomePage":
-            print("Welcome to the OBD II Screener\n")
-            print("Select option by typing it number\n")
+# after typing 'Exit' the program will close, because there are not
+# such case for ExitFlow, if case didn't match view() method just finish execution
+def view(view_option):
+    if view_option == home_view:
+        print("Welcome to the OBD II Screener\n")
+        print("Select option by typing it number\n")
+        print (f"Connection status: {isConnected}")
+        if isConnected:
             flow(showOptions([check_errors, reset_errors, exit]))
-        case "ResetView":
-            # print(f"You logged as {loggedUser.username}\n")
-            flow(showOptions(['Foo1','Foo2',back, exit]))
-        case "CheckView":
-            # print(f"You logged as {loggedUser.username}\n")
-            flow(showOptions(['Boo1','Boo2',back, exit]))
+        else:
+            flow(showOptions([exit]))
+    elif view_option == screener_view:
+        flow(showOptions([show_errors,back, exit]))
         
-    if (state != 'Exit'):
+    if (view_option != 'Exit'):
         view(currentState)
         
 # entrypoint
