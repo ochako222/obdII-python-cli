@@ -5,10 +5,6 @@ from app.check import showAllErrors
 
 # available view
 home_view = "HomePage"
-screener_view = "ScreenerView"
-
-# available options
-check_errors = "Error screener"
 
 # actions
 show_errors = "Show errors"
@@ -20,17 +16,17 @@ back = "Back"
 currentState = home_view
 previousState = ''
 
-connection = obd.OBD('/dev/tty.usbserial-2140')
-# isConnected = connection.is_connected()
-isConnected = True
+ports = obd.scan_serial()
+port_to_connect = ports[len(ports)-1]
+print(f"Connecting to port: {port_to_connect}\n")
+
+connection = obd.OBD(port_to_connect)
+isConnected = connection.is_connected()
 
 # mapping what to do after selecting corresponding action
 def flow(option):
     global currentState, previousState, connection
-    if option == check_errors:
-        previousState = currentState
-        currentState = screener_view
-    elif option == reset_errors:
+    if option == reset_errors:
         return resetErrors(connection)
     elif option == show_errors:
         return showAllErrors(connection)
@@ -47,12 +43,11 @@ def view(view_option):
         print("Welcome to the OBD II Screener\n")
         print("Select option by typing it number\n")
         print (f"Connection status: {isConnected}\n")
+        
         if isConnected:
-            flow(showOptions([check_errors, reset_errors, exit]))
+            flow(showOptions([show_errors, reset_errors, exit]))
         else:
             flow(showOptions([exit]))
-    elif view_option == screener_view:
-        flow(showOptions([show_errors,back, exit]))
         
     if (view_option != 'Exit'):
         view(currentState)

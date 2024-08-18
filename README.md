@@ -28,3 +28,7 @@ Install libraries
 pip install -r requirements.txt
 ```
 
+
+# TODO:
+    1. Make auto select last available connection
+    2. Make all options in the first menu
