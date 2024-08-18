@@ -21,8 +21,8 @@ currentState = home_view
 previousState = ''
 
 connection = obd.OBD('/dev/tty.usbserial-2140')
-isConnected = connection.is_connected()
-
+# isConnected = connection.is_connected()
+isConnected = True
 
 # mapping what to do after selecting corresponding action
 def flow(option):
@@ -46,7 +46,7 @@ def view(view_option):
     if view_option == home_view:
         print("Welcome to the OBD II Screener\n")
         print("Select option by typing it number\n")
-        print (f"Connection status: {isConnected}")
+        print (f"Connection status: {isConnected}\n")
         if isConnected:
             flow(showOptions([check_errors, reset_errors, exit]))
         else:

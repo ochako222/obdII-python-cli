@@ -15,8 +15,8 @@ def showOptions(options):
     else:
         os.system('clear')
         print(options)
-        print(f"your option: {userInput}")
-        print("Selected wrong option! Pls try again...")
+        print(f"your option: {userInput}\n")
+        print("Selected wrong option! Pls try again...\n")
         time.sleep(2)
         os.system('clear')
         return showOptions(options)
