@@ -1,4 +1,5 @@
-import obd
+from app.sensors import get_sensor_data
+import obd # type: ignore
 from app.helpers import fancy_greeting, showOptions
 from app.reset import resetErrors
 from app.check import showAllErrors
@@ -7,7 +8,8 @@ from colorama import Fore
 # Constants
 HOME_VIEW = "HomePage"
 SHOW_ERRORS = "Show errors"
-RESET_ERRORS = "Clean errors"
+RESET_ERRORS = "Clean errors",
+SHOW_SENSORS = "Show sensors data"
 EXIT = "Exit"
 BACK = "Back"
 
@@ -33,6 +35,8 @@ def flow(option):
         resetErrors(connection)
     elif option == SHOW_ERRORS:
         showAllErrors(connection)
+    elif option == SHOW_SENSORS:
+        get_sensor_data(connection)
     elif option == EXIT:
         current_state = EXIT
     elif option == BACK:
@@ -47,7 +51,7 @@ def view(view_option):
         print('Connection status: ', Fore.YELLOW + f'{is_connected}\n')
         
         if is_connected:
-            flow(showOptions([SHOW_ERRORS, RESET_ERRORS, EXIT]))
+            flow(showOptions([SHOW_ERRORS, RESET_ERRORS,SHOW_SENSORS, EXIT]))
         else:
             flow(showOptions([EXIT]))
         
