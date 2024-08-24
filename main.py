@@ -1,56 +1,60 @@
 import obd
-from app.helpers import showOptions
+from app.helpers import fancy_greeting, showOptions
 from app.reset import resetErrors
 from app.check import showAllErrors
+from colorama import Fore
 
-# available view
-home_view = "HomePage"
+# Constants
+HOME_VIEW = "HomePage"
+SHOW_ERRORS = "Show errors"
+RESET_ERRORS = "Clean errors"
+EXIT = "Exit"
+BACK = "Back"
 
-# actions
-show_errors = "Show errors"
-reset_errors = "Clean errors"
-exit = "Exit"
-back = "Back"
+# State variables
+current_state = HOME_VIEW
+previous_state = ''
 
-# state variables
-currentState = home_view
-previousState = ''
-
+# Initialize connection
 ports = obd.scan_serial()
-port_to_connect = ports[len(ports)-1]
-print(f"Connecting to port: {port_to_connect}\n")
-
-connection = obd.OBD(port_to_connect)
-isConnected = connection.is_connected()
-
-# mapping what to do after selecting corresponding action
+if ports:
+    port_to_connect = ports[-1]
+    connection = obd.OBD(port_to_connect)
+    is_connected = connection.is_connected()
+else:
+    print("No OBD ports found. Exiting...")
+    exit()
+    
+    
+# Function to map selected action to corresponding functionality
 def flow(option):
-    global currentState, previousState, connection
-    if option == reset_errors:
-        return resetErrors(connection)
-    elif option == show_errors:
-        return showAllErrors(connection)
-    elif option == exit:
-        currentState = 'Exit'
-    elif option == back:
-        currentState = previousState
-
-# main function to change page view
-# after typing 'Exit' the program will close, because there are not
-# such case for ExitFlow, if case didn't match view() method just finish execution
+    global current_state, previous_state, connection
+    if option == RESET_ERRORS:
+        resetErrors(connection)
+    elif option == SHOW_ERRORS:
+        showAllErrors(connection)
+    elif option == EXIT:
+        current_state = EXIT
+    elif option == BACK:
+        current_state = previous_state
+        
+# Main function to handle views
 def view(view_option):
-    if view_option == home_view:
-        print("Welcome to the OBD II Screener\n")
-        print("Select option by typing it number\n")
-        print (f"Connection status: {isConnected}\n")
+    global current_state
+    if view_option == HOME_VIEW:
+  
+        print('Connected to port: ', Fore.YELLOW + f'{port_to_connect}')
+        print('Connection status: ', Fore.YELLOW + f'{is_connected}\n')
         
-        if isConnected:
-            flow(showOptions([show_errors, reset_errors, exit]))
+        if is_connected:
+            flow(showOptions([SHOW_ERRORS, RESET_ERRORS, EXIT]))
         else:
-            flow(showOptions([exit]))
+            flow(showOptions([EXIT]))
         
-    if (view_option != 'Exit'):
-        view(currentState)
-        
-# entrypoint
-view(currentState)
+    if current_state != EXIT:
+        view(current_state)
+
+# Entrypoint
+if __name__ == "__main__":
+    fancy_greeting()
+    view(current_state)
