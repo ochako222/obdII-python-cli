@@ -28,6 +28,4 @@ Install libraries
 pip install -r requirements.txt
 ```
 
-
-# TODO:
-    1. Make possible to paste commands with small letter
+> Use command `ls /dev/tty.*` to show all available connections

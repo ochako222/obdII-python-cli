@@ -8,7 +8,7 @@ from colorama import Fore
 # Constants
 HOME_VIEW = "HomePage"
 SHOW_ERRORS = "Show errors"
-RESET_ERRORS = "Clean errors",
+RESET_ERRORS = "Clean errors"
 SHOW_SENSORS = "Show sensors data"
 EXIT = "Exit"
 BACK = "Back"
